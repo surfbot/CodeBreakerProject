@@ -1,41 +1,72 @@
 let answer = document.getElementById('answer');
 let attempt = document.getElementById('attempt');
-let message = document.getElementById('message');
 
 function guess() {
     let input = document.getElementById('user-guess');
-
-    if(attempt === '' || answer === '') {
+    if(answer.value == '' || attempt.value == ''){
         setHiddenFields();
     }
+    //add functionality to guess function here
+    if(!validateInput(input.value)){
+        return;
+    }
+    attempt.value++;
 
-    if(!validateInput(input.value)) {
-        return false;
+    if(getResults(input.value)){
+        setMessage('You Win! :)');
+    } else if(attempt.value >= 10){
+        setMessage('You LOse! :(');
     } else {
-        attempt++;
-    }
-
-    // scope, wrap all within guess()?
-}
-
-function setHiddenFields() {
-    attempt = 0;
-    answer = math.floor(math.random() * 10000).toString();
-
-    while(answer.length < 4) {
-        answer = 0 + answer;
+        setMessage('Incorrect, try again');
     }
 }
 
-function setMessage(text) {
-    message = text.innerHTML;
-}
+function getResults(input){
+    let html = '<div class="row"><span class="col-md-6">' + input + '</span><div class="col-md-6">';
+    for(i = 0; i < input.length; i++){
+        if(input.charAt(i) == answer.value.charAt(i)){
+            html += '<span class="glyphicon glyphicon-ok"></span>';
+        }else if(answer.value.indexOf(input.charAt(i)) > -1){
+            html += '<span class="glyphicon glyphicon-transfer"></span>';
+        }else {
+            html += '<span class="glyphicon glyphicon-remove"></span>';
+        }
+    }
+    html += '</div></div>';
+    document.getElementById('results').innerHTML += html;
 
-function validateInput(input) {
-    if(input.length === 4) {
+    if(input == answer.value){
         return true;
+    }
+    return false;
+}
+//implement new functions here
+function setHiddenFields(){
+    answer.value = Math.floor(Math.random() * 10000).toString();
+    while(answer.value.length < 4){
+        answer.value = "0" + answer.value;
+    }
+    attempt.value = "0";
+}
+
+function setMessage(message){
+    document.getElementById('message').innerHTML = message;
+    if(success){
+        code.className += ' success';
     } else {
+        code.className += ' failure';
+    }
+    code.innerHTML = answer.value;
+}
+
+function showAnswer(success){
+    let code = document.getElementById('code');
+
+}
+function validateInput(input){
+    if(input.length != 4){
         setMessage('Guesses must be exactly 4 characters long.');
         return false;
     }
+    return true;
 }
